@@ -54,6 +54,8 @@ Diaspora::Application.configure do
   end
   
   config.threadsafe!
+  config.dependency_loading = true if $rails_rake_task
+
 end
 
 GC.enable_stats if GC.respond_to?(:enable_stats)
