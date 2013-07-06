@@ -21,8 +21,11 @@ class AspectMembershipsController < ApplicationController
 
     raise ActiveRecord::RecordNotFound unless membership.present?
 
+
     # do it!
     success = membership.destroy
+
+    # success = true
 
     # set the flash message
     if success
@@ -36,7 +39,9 @@ class AspectMembershipsController < ApplicationController
         if success
           render :json => {
             :person_id  => contact.person_id,
-            :aspect_ids => contact.aspects.map{|a| a.id}
+            :aspect_ids => contact.aspects.map{|a| a.id},
+            :aspect_id  => aspect.id,
+            :aspect_contacts_count  => aspect.reload.contacts.size
           }
         else
           render :text => membership.errors.full_messages, :status => 403
@@ -57,7 +62,7 @@ class AspectMembershipsController < ApplicationController
       flash.now[:notice] =  I18n.t('aspects.add_to_aspect.success')
       respond_with do |format|
         format.json do
-          render :json => AspectMembership.where(:contact_id => @contact.id, :aspect_id => @aspect.id).first.to_json
+          render :json => AspectMembership.where(:contact_id => @contact.id, :aspect_id => @aspect.id).first.to_json({:include => :contact}, true)
         end
 
         format.all { redirect_to :back }

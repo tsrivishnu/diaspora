@@ -18,6 +18,7 @@ app.views.Publisher = Backbone.View.extend(_.extend(
   events : {
     "keydown #status_message_fake_text" : "keyDown",
     "focus textarea" : "open",
+    "focusout textarea": "tryClose",
     "click #hide_publisher" : "clear",
     "submit form" : "createStatusMessage",
     "click .post_preview_button" : "createPostPreview",
@@ -44,7 +45,7 @@ app.views.Publisher = Backbone.View.extend(_.extend(
     Mentions.initialize(this.el_input);
 
     // init autoresize plugin
-    this.el_input.autoResize({ 'extraSpace' : 10, 'maxHeight' : Infinity });
+    this.el_input.autoResize({ 'extraSpace' : 1, 'maxHeight' : Infinity });
 
     // init tooltip plugin
     this.$(this.tooltipSelector).tooltip();
@@ -109,6 +110,7 @@ app.views.Publisher = Backbone.View.extend(_.extend(
 
   // creates the location
   showLocation: function(){
+    this.open();
     if($('#location').length == 0){
       $('#publisher_textarea_wrapper').after('<div id="location"></div>');
       app.views.location = new app.views.Location();
@@ -215,6 +217,13 @@ app.views.Publisher = Backbone.View.extend(_.extend(
       this.open();
       return false;
     }
+  },
+
+  tryClose: function(){
+    if( this.el_input.val() == '' )
+      this.close();
+      
+
   },
 
   clear : function() {

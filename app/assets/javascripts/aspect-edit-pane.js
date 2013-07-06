@@ -63,6 +63,7 @@ _.extend(app.tmp.ContactAspectsBox.prototype, {
   },
 
   _successSaveCb: function(aspect_membership) {
+
     var membership_id = aspect_membership.get('id');
     var person_id = aspect_membership.get('person_id');
     var el = $('li.contact').find('a.add[data-person_id="'+person_id+'"]');
@@ -71,6 +72,9 @@ _.extend(app.tmp.ContactAspectsBox.prototype, {
       .addClass('added')
       .attr('data-membership_id', membership_id) // just to be sure...
       .data('membership_id', membership_id);
+
+    // addning element to stream
+    $('#people_stream').append("member ship to be added")
   },
 
   removeFromAspect: function(evt) {
@@ -89,14 +93,23 @@ _.extend(app.tmp.ContactAspectsBox.prototype, {
     return false;
   },
 
-  _successDestroyCb: function(aspect_membership) {
+  _successDestroyCb: function(aspect_membership, resp) {
     var membership_id = aspect_membership.get('id');
+    alert("here")
     var el = $('li.contact').find('a.added[data-membership_id="'+membership_id+'"]');
 
     el.removeClass('added')
       .addClass('add')
       .removeAttr('data-membership_id')
       .removeData('membership_id');
+
+    console.log("here");
+
+    $('.aspect_element[data-aspect-id="'+resp.aspect_id+'"] .contact_count').html(resp.aspect_contacts_count)
+
+    // remove the element from the display
+    $('.stream_element').has('[data-membership_id="'+membership_id+'"]')
+      .fadeOut(300, function() { $(this).remove() });
   },
 
   _displayError: function(msg_id, contact_el) {

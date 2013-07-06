@@ -110,6 +110,8 @@ app.views.AspectMembership = Backbone.View.extend({
       .removeData('membership_id')
       .removeClass('selected');
 
+    alert("herereererererererere")
+
     // we just removed the last aspect, inform the user with a flash message
     // that he is no longer sharing with that person
     if( this.dropdown.find('li.selected').length == 0 ) {
