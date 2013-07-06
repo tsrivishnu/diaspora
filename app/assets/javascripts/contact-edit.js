@@ -52,8 +52,10 @@ _.extend(app.tmp.ContactAspects.prototype, {
     return false;
   },
 
-  _successDestroyCb: function(aspect_membership) {
+  _successDestroyCb: function(aspect_membership, resp) {
     var membership_id = aspect_membership.get('id');
+
+    $('.aspect_element[data-aspect-id="'+resp.aspect_id+'"] .contact_count').html(resp.aspect_contacts_count)
 
     $('.stream_element').has('[data-membership_id="'+membership_id+'"]')
       .fadeOut(300, function() { $(this).remove() });

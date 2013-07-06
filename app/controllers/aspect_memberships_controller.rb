@@ -36,7 +36,9 @@ class AspectMembershipsController < ApplicationController
         if success
           render :json => {
             :person_id  => contact.person_id,
-            :aspect_ids => contact.aspects.map{|a| a.id}
+            :aspect_ids => contact.aspects.map{|a| a.id},
+            :aspect_id  => aspect.id,
+            :aspect_contacts_count  => aspect.reload.contacts.size
           }
         else
           render :text => membership.errors.full_messages, :status => 403
