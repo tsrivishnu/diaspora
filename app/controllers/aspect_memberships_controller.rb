@@ -59,7 +59,7 @@ class AspectMembershipsController < ApplicationController
       flash.now[:notice] =  I18n.t('aspects.add_to_aspect.success')
       respond_with do |format|
         format.json do
-          render :json => AspectMembership.where(:contact_id => @contact.id, :aspect_id => @aspect.id).first.to_json
+          render :json => AspectMembership.where(:contact_id => @contact.id, :aspect_id => @aspect.id).first.to_json()
         end
 
         format.all { redirect_to :back }

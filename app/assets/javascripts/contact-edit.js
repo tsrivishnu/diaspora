@@ -29,6 +29,17 @@ var ContactEdit = {
 
 app.tmp || (app.tmp = {});
 
+app.tmp.updateAspectContactsCount = function(aspect_id, updated_contacts_count){
+  $('.aspect_element[data-aspect-id="'+aspect_id+'"] .contact_count').html(updated_contacts_count) 
+}
+
+app.tmp.removeContactViewFromAspect = function(membership_id){
+  $('.stream_element').has('[data-membership_id="'+membership_id+'"]')
+      .fadeOut(300, function() { 
+        $(this).remove();
+      });
+}
+
 // on the contacts page, viewing the list of people in a single aspect
 app.tmp.ContactAspects = function() {
   $('#people_stream').on('click', '.contact_remove-from-aspect', _.bind(this.removeFromAspect, this));
@@ -55,10 +66,10 @@ _.extend(app.tmp.ContactAspects.prototype, {
   _successDestroyCb: function(aspect_membership, resp) {
     var membership_id = aspect_membership.get('id');
 
-    $('.aspect_element[data-aspect-id="'+resp.aspect_id+'"] .contact_count').html(resp.aspect_contacts_count)
+    // update the contact count summary of the aspect.
+    app.tmp.updateAspectContactsCount(resp.aspect_id, resp.aspect_contacts_count)
 
-    $('.stream_element').has('[data-membership_id="'+membership_id+'"]')
-      .fadeOut(300, function() { $(this).remove() });
+    app.tmp.removeContactViewFromAspect(membership_id)
   },
 
   _displayError: function(msg_id, membership_id) {

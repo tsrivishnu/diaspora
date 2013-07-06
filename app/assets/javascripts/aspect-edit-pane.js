@@ -62,15 +62,21 @@ _.extend(app.tmp.ContactAspectsBox.prototype, {
     return false;
   },
 
-  _successSaveCb: function(aspect_membership) {
+  _successSaveCb: function(aspect_membership, resp) {
     var membership_id = aspect_membership.get('id');
     var person_id = aspect_membership.get('person_id');
     var el = $('li.contact').find('a.add[data-person_id="'+person_id+'"]');
+
+    console.log('here')
+    console.log(resp)
 
     el.removeClass('add')
       .addClass('added')
       .attr('data-membership_id', membership_id) // just to be sure...
       .data('membership_id', membership_id);
+
+    // update the contact count summary of the aspect. 
+    app.tmp.updateAspectContactsCount(resp.aspect_id, resp.aspect_contacts_count)
   },
 
   removeFromAspect: function(evt) {
@@ -99,11 +105,10 @@ _.extend(app.tmp.ContactAspectsBox.prototype, {
       .removeData('membership_id');
 
     // update the contact count summary of the aspect. 
-    $('.aspect_element[data-aspect-id="'+resp.aspect_id+'"] .contact_count').html(resp.aspect_contacts_count)
+    app.tmp.updateAspectContactsCount(resp.aspect_id, resp.aspect_contacts_count)
 
     // remove the aspect_membership element contact from the aspect list
-    $('.stream_element').has('[data-membership_id="'+membership_id+'"]')
-      .fadeOut(300, function() { $(this).remove() });
+    app.tmp.removeContactViewFromAspect(membership_id)
   },
 
   _displayError: function(msg_id, contact_el) {
