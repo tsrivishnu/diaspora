@@ -59,7 +59,7 @@ app.views.AspectMembership = Backbone.View.extend({
     aspect_membership.save();
   },
 
-  _successSaveCb: function(aspect_membership) {
+  _successSaveCb: function(aspect_membership, resp) {
     var aspect_id = aspect_membership.get('aspect_id');
     var membership_id = aspect_membership.get('id');
     var li = this.dropdown.find('li[data-aspect_id="'+aspect_id+'"]');
@@ -74,6 +74,9 @@ app.views.AspectMembership = Backbone.View.extend({
     li.attr('data-membership_id', membership_id) // just to be sure...
       .data('membership_id', membership_id)
       .addClass('selected');
+
+    // update the contact count summary of the aspect.
+    app.tmp.updateAspectContactsCount(resp.aspect_id, resp.aspect_contacts_count)
 
     this.updateSummary();
     this._done();
@@ -102,9 +105,12 @@ app.views.AspectMembership = Backbone.View.extend({
     aspect_membership.destroy();
   },
 
-  _successDestroyCb: function(aspect_membership) {
+  _successDestroyCb: function(aspect_membership, resp) {
     var membership_id = aspect_membership.get('id');
     var li = this.dropdown.find('li[data-membership_id="'+membership_id+'"]');
+
+    // update the contact count summary of the aspect.
+    app.tmp.updateAspectContactsCount(resp.aspect_id, resp.aspect_contacts_count)
 
     li.removeAttr('data-membership_id')
       .removeData('membership_id')
